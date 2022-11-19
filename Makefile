@@ -8,13 +8,17 @@ venv:
 	.venv/bin/pip install -r requirements.txt
 
 install:
-	$(VENV_PYTHON) setup.py install 
+	$(VENV_BIN)/pip install -e .
 
 clean:
 	rm -Rf build dist *.egg-info
+	find . -name '.*.sw?' -delete
 
 build: clean
 	$(VENV_PYTHON) setup.py bdist_wheel
+
+test:
+	$(VENV_PYTHON) -m pytest -vv
 
 check:
 	$(VENV_BIN)/flake8 .

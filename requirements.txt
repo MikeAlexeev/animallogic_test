@@ -5,3 +5,6 @@ black
 
 # build
 wheel
+
+# testing
+pytest
