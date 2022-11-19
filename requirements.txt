@@ -1,0 +1,7 @@
+# code
+flake8
+pep8-naming
+black
+
+# build
+wheel
