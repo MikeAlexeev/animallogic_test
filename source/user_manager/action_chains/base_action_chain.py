@@ -1,7 +1,7 @@
 from typing import Any, List
 
-from ..plugin_system.plugin_info import PluginInfo
 from ..action_type import ActionType
+from ..plugin_system.plugin_info import PluginInfo
 
 
 class BaseActionChain:

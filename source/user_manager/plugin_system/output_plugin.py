@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
-from .base_plugin import BasePlugin
 from ..action_type import ActionType
+from .base_plugin import BasePlugin
 
 
 class OutputPlugin(BasePlugin):

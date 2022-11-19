@@ -2,9 +2,9 @@ import argparse
 import logging
 from pathlib import Path
 
-from .plugin_system.plugin_loader import PluginLoader
-from .action_type import ActionType
 from .action_chains.base_action_chain import BaseActionChain
+from .action_type import ActionType
+from .plugin_system.plugin_loader import PluginLoader
 
 
 def output_users(args: argparse.Namespace, chain: BaseActionChain) -> None:

@@ -5,9 +5,9 @@ from pathlib import Path
 from types import ModuleType
 from typing import List, Optional
 
+from ..utils import convert_path_to_module_name
 from .base_plugin import BasePlugin
 from .plugin_info import PluginInfo
-from ..utils import convert_path_to_module_name
 
 
 class PluginLoader:

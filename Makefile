@@ -3,7 +3,7 @@ VENV_PYTHON=$(VENV_BIN)/python
 
 .PHONY: build
 
-venv: 
+venv:
 	python3 -m venv .venv
 	.venv/bin/pip install -r requirements.txt
 
@@ -23,6 +23,9 @@ test:
 lint:
 	$(VENV_BIN)/flake8 .
 	$(VENV_BIN)/mypy -p user_manager
+
+isort:
+	$(VENV_BIN)/isort .
 
 black:
 	$(VENV_BIN)/black .

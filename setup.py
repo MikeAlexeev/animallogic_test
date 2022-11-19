@@ -1,6 +1,5 @@
 import setuptools
 
-
 setuptools.setup(
     name="user-manager",
     version="1.0",
