@@ -10,7 +10,6 @@ from .base_plugin import BasePlugin
 
 
 class PluginLoader:
-
     def load_plugins(self, folder: Path) -> List[Type[BasePlugin]]:
         all_plugins: List[Type[BasePlugin]] = []
         for path in folder.glob("*.py"):
@@ -31,7 +30,7 @@ class PluginLoader:
 
     @property
     def default_plugins_folder(self) -> Path:
-        return Path(__file__).parent.parent / 'default_plugins'
+        return Path(__file__).parent.parent / "default_plugins"
 
     def _load_module(self, path: Path) -> Optional[ModuleType]:
         module_name = convert_path_to_module_name(path)
