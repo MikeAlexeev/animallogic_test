@@ -1,6 +1,9 @@
-def main():
+from .lib import func
+
+
+def main() -> None:
     print("hello")
 
 
-def hello():
-    return True
+def hello() -> None:
+    func(123)

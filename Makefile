@@ -20,8 +20,9 @@ build: clean
 test:
 	$(VENV_PYTHON) -m pytest -vv
 
-check:
+lint:
 	$(VENV_BIN)/flake8 .
+	$(VENV_BIN)/mypy -p user_manager
 
 black:
 	$(VENV_BIN)/black .

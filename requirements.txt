@@ -1,7 +1,8 @@
 # code
-flake8
-pep8-naming
 black
+flake8
+mypy
+pep8-naming
 
 # build
 wheel
