@@ -49,6 +49,7 @@ def list_plugins(args: argparse.Namespace, plugin_registry: PluginRegistry) -> N
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--plugin-dir", type=Path)
+    parser.add_argument("--log-level", default="ERROR")
 
     subparsers = parser.add_subparsers(dest="command")
     output_parser = subparsers.add_parser("get")
@@ -74,8 +75,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.DEBUG)
     args = parse_args()
+    log_level = logging.getLevelName(args.log_level)
+    logging.basicConfig(level=log_level)
 
     loader = PluginLoader()
     plugins = loader.load_plugins(loader.default_plugins_folder)
