@@ -1,5 +1,5 @@
 from enum import Enum
 
 
-class PluginType(str, Enum):
+class ActionType(str, Enum):
     OUTPUT = 'output'
