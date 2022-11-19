@@ -1,13 +1,13 @@
 VENV_BIN=.venv/bin
 VENV_PYTHON=$(VENV_BIN)/python
 
-.PHONY: build
+.PHONY: build tests
 
 venv:
 	python3 -m venv .venv
 	.venv/bin/pip install -r requirements.txt
 
-install:
+install-editable:
 	$(VENV_BIN)/pip install -e .
 
 clean:
@@ -17,7 +17,7 @@ clean:
 build: clean
 	$(VENV_PYTHON) setup.py bdist_wheel
 
-test:
+tests:
 	$(VENV_PYTHON) -m pytest -vv
 
 lint:
