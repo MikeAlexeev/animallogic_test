@@ -1,2 +1,2 @@
 class BasePlugin:
-    pass
+    NAME: str = "base_plugin"

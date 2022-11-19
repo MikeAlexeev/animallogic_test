@@ -3,8 +3,8 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Type
 
-from .base_storage import BaseStorage
-from .base_user_record import BaseUserRecord
+from user_manager.storage.base_storage import BaseStorage
+from user_manager.storage.base_user_record import BaseUserRecord
 
 
 class JsonStorage(BaseStorage):

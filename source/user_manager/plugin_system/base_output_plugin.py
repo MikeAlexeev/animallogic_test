@@ -1,11 +1,9 @@
 from abc import abstractmethod
 
-from ..action_type import ActionType
 from .base_plugin import BasePlugin
 
 
-class OutputPlugin(BasePlugin):
-    TYPE = ActionType.OUTPUT
+class BaseOutputPlugin(BasePlugin):
 
     @abstractmethod
     def run_action(self, data: dict) -> None:
