@@ -13,12 +13,12 @@ class FilterMatcher:
         return bool(re.match(pattern, value))
 
     @classmethod
-    def match_patterns_dict(cls, data: Dict[str, str], filters: Dict[str, str]) -> bool:
+    def match_patterns_dict(cls, data: Dict[str, Optional[str]], filters: Dict[str, str]) -> bool:
         if not data:
             return True
 
         for key, value in data.items():
-            if key not in filters:
+            if value is None or key not in filters:
                 continue
             if cls.match_pattern(value, filters[key]):
                 return True

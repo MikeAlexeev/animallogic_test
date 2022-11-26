@@ -60,6 +60,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--plugins-dir", type=Path)
     parser.add_argument("--log-level", default="ERROR")
+    parser.add_argument("--output-type")
+    parser.add_argument("--storage-type")
+    parser.add_argument("--record-type")
 
     subparsers = parser.add_subparsers(dest="command")
     save_parser = subparsers.add_parser("set")
@@ -75,19 +78,6 @@ def main() -> None:
     remove_parser.set_defaults(func=remove_user)
     search_parser.set_defaults(func=search_users)
     list_parser.set_defaults(func=list_plugins)
-
-    for sub_parser in [
-        save_parser,
-        output_parser,
-        output_all_parser,
-        remove_parser,
-        search_parser,
-        list_parser,
-    ]:
-        # args not actualy used in all sub parsers. Added for unification and simplicity
-        sub_parser.add_argument("--output-type")
-        sub_parser.add_argument("--storage-type")
-        sub_parser.add_argument("--record-type")
 
     for sub_parser in [save_parser, output_parser, remove_parser]:
         sub_parser.add_argument("username")
@@ -121,6 +111,6 @@ def main() -> None:
         save_parser.add_argument(arg_name)
         search_parser.add_argument(arg_name)
 
-    # the second round
+    # the second round of parsing
     args = parser.parse_args()
     args.func(args, system_configuration)
