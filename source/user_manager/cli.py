@@ -1,5 +1,6 @@
 import argparse
 import logging
+import sys
 from pathlib import Path
 from typing import cast, Type
 
@@ -24,6 +25,9 @@ def output_user(args: argparse.Namespace, plugin_registry: PluginRegistry) -> No
     storage_impl = cast(Type[BaseStoragePlugin], storage_impl)
     storage_record_impl = cast(Type[BaseRecordPlugin], storage_record_impl)
     record = storage_impl(record_type=storage_record_impl).get(args.username)
+    if not record:
+        print(f'record for {args.username} doesn`t exist', file=sys.stderr)
+        exit(1)
     output_impl().do_output(args.username, record)
 
 
@@ -37,7 +41,13 @@ def set_user(args: argparse.Namespace, plugin_registry: PluginRegistry) -> None:
     storage_impl = cast(Type[BaseStoragePlugin], storage_impl)
     storage_record_impl = cast(Type[BaseRecordPlugin], storage_record_impl)
     storage = storage_impl(record_type=storage_record_impl)
-    record = storage_record_impl.from_dict(vars(args))
+
+    existing_record = storage_impl(record_type=storage_record_impl).get(args.username)
+    data = vars(args)
+    if existing_record:
+        data = {**existing_record.to_dict(), **data}
+
+    record = storage_record_impl.from_dict(data)
     storage.set(args.username, record)
 
 
@@ -67,8 +77,8 @@ def parse_args() -> argparse.Namespace:
     set_parser.add_argument("--output", default="simple")
     set_parser.add_argument("--storage", default="json")
     set_parser.add_argument("--record-type", default="user-record")
-    set_parser.add_argument("--phone-number", required=True)  # TODO partial update
-    set_parser.add_argument("--address", required=True)
+    set_parser.add_argument("--phone-number")
+    set_parser.add_argument("--address")
     set_parser.add_argument("username")
 
     return parser.parse_args()

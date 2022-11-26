@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Type
+from typing import Optional, Type
 
 from .base_record_plugin import BaseRecordPlugin
 from .base_plugin import BasePlugin
@@ -10,7 +10,7 @@ class BaseStoragePlugin(BasePlugin):
         self._record_type = record_type
 
     @abstractmethod
-    def get(self, username: str) -> BaseRecordPlugin:
+    def get(self, username: str) -> Optional[BaseRecordPlugin]:
         pass
 
     @abstractmethod
