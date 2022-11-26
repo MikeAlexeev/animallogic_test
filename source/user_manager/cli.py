@@ -17,7 +17,15 @@ def output_user(
 def save_user(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
-    UserManager(system_configuration=system_configuration).save_user(args.username, vars(args))
+    UserManager(system_configuration=system_configuration).save_user(
+        args.username, vars(args)
+    )
+
+
+def remove_user(
+    args: argparse.Namespace, system_configuration: SystemConfiguration
+) -> None:
+    UserManager(system_configuration=system_configuration).remove_user(args.username)
 
 
 def list_plugins(
@@ -33,23 +41,27 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--log-level", default="ERROR")
 
     subparsers = parser.add_subparsers(dest="command")
+    save_parser = subparsers.add_parser("set")
     output_parser = subparsers.add_parser("get")
-    output_parser.set_defaults(func=output_user)
+    remove_parser = subparsers.add_parser("remove")
     list_parser = subparsers.add_parser("list-plugins")
-    list_parser.set_defaults(func=list_plugins)
-    save_user = subparsers.add_parser("set")
-    save_user.set_defaults(func=save_user)
 
-    for sub_parser in [output_parser, save_user, list_parser]:
-        # args not actualy used in list_parser. Added for unification and simplicity
+    save_parser.set_defaults(func=save_user)
+    output_parser.set_defaults(func=output_user)
+    remove_parser.set_defaults(func=remove_user)
+    list_parser.set_defaults(func=list_plugins)
+
+    for sub_parser in [save_parser, output_parser, remove_parser, list_parser]:
+        # args not actualy used in all sub parsers. Added for unification and simplicity
         sub_parser.add_argument("--output-type", default="simple")
         sub_parser.add_argument("--storage-type", default="json")
         sub_parser.add_argument("--record-type", default="user-record")
 
-    save_user.add_argument("--phone-number")
-    save_user.add_argument("--address")
-    save_user.add_argument("username")
-    output_parser.add_argument("username")
+    for sub_parser in [save_parser, output_parser, remove_parser]:
+        sub_parser.add_argument("username")
+
+    save_parser.add_argument("--phone-number")
+    save_parser.add_argument("--address")
 
     return parser.parse_args()
 

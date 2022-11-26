@@ -16,3 +16,7 @@ class BaseStoragePlugin(BasePlugin):
     @abstractmethod
     def set(self, username: str, record: BaseRecordPlugin) -> None:
         pass
+
+    @abstractmethod
+    def remove(self, username: str) -> None:
+        pass

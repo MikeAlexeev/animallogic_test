@@ -11,16 +11,23 @@ class JsonStoragePlugin(BaseStoragePlugin):
     STORAGE_PATH = Path("/tmp/users.json")  # defined here for simplicity
 
     def get(self, username: str) -> Optional[BaseRecordPlugin]:
-        raw_all = self._load_raw_data()
-        if username not in raw_all:
+        raw_data = self._load_raw_data()
+        if username not in raw_data:
             return None
-        raw_user_data = raw_all[username]
+        raw_user_data = raw_data[username]
         return self._record_type(**raw_user_data)
 
     def set(self, username: str, record: BaseRecordPlugin) -> None:
         raw = self._load_raw_data()
         raw[username] = record.to_dict()
         self._save_raw_data(raw)
+
+    def remove(self, username: str) -> None:
+        raw_data = self._load_raw_data()
+        raw_data.pop(
+            username, None
+        )  # not raise exception for absent user, behavior is not specified
+        self._save_raw_data(raw_data)
 
     def _load_raw_data(self) -> dict:
         if not self.STORAGE_PATH.exists():
