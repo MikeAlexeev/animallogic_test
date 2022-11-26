@@ -31,11 +31,11 @@ class FilterMatcher:
 class JsonStoragePlugin(BaseStoragePlugin):
     NAME = "json"
 
-    storage_path: str = '/tmp/users.json'
+    storage_path: str = "/tmp/users.json"
 
     @classmethod
     def get_option_names(cls) -> List[str]:
-        return ['storage_path']
+        return ["storage_path"]
 
     def get_all_records_for_user(
         self, username: str

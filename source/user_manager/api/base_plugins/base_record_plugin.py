@@ -8,7 +8,9 @@ from ...plugin_system.base_plugin import BasePlugin
 class BaseRecordPlugin(BasePlugin):
     @classmethod
     def from_dict(cls, data: dict) -> "BaseRecordPlugin":
-        values = {key: val for key, val in data.items() if key in cls.get_option_names()}
+        values = {
+            key: val for key, val in data.items() if key in cls.get_option_names()
+        }
         return cls(**values)
 
     def to_dict(self) -> dict:

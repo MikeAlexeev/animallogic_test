@@ -24,4 +24,4 @@ def test_dynamic_args_loader():
     ):
         args = dyn_args_loader.get_record_args()
 
-    assert sorted(args) == sorted(['--email', '--age', '--phone-number'])
+    assert sorted(args) == sorted(["--email", "--age", "--phone-number"])
