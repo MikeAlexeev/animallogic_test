@@ -10,37 +10,42 @@ class JsonStoragePlugin(BaseStoragePlugin):
     NAME = "json"
     STORAGE_PATH = Path("/tmp/users.json")  # defined here for simplicity
 
-    def get_records_for_user(
-        self, username: str, dataset_name: Optional[str]
+    def get_all_records_for_user(
+        self, username: str
     ) -> Optional[Dict[str, BaseRecordPlugin]]:
         raw_data = self._load_raw_data()
         if username not in raw_data:
             return None
 
         user_data = raw_data[username]
-        if dataset_name and dataset_name not in user_data:
-            return None
-
-        if dataset_name:
-            user_data = {dataset_name: user_data[dataset_name]}
 
         return {
             dataset_name: self._record_type.from_dict(data)
             for dataset_name, data in user_data.items()
         }
 
+    def get_user_record(self, username: str, dataset_name: str) -> Optional[BaseRecordPlugin]:
+        user_records = self.get_all_records_for_user(username)
+        if not user_records:
+            return None
+
+        if dataset_name not in user_records:
+            return None
+
+        return user_records[dataset_name]
+
     def get_all_users_records(self) -> Dict[str, Dict[str, BaseRecordPlugin]]:
         raw_data = self._load_raw_data()
 
         parsed_data: Dict[str, Dict[str, BaseRecordPlugin]] = {}
-        for username, user_datasets in raw_data.items():
+        for username, user_records in raw_data.items():
             parsed_data[username] = {}
-            for dataset_name, data in user_datasets.items():
+            for dataset_name, data in user_records.items():
                 parsed_data[username][dataset_name] = self._record_type.from_dict(data)
 
         return parsed_data
 
-    def set(self, username: str, dataset_name: str, record: BaseRecordPlugin) -> None:
+    def set_user_record(self, username: str, dataset_name: str, record: BaseRecordPlugin) -> None:
         raw = self._load_raw_data()
         if username not in raw:
             raw[username] = {}
@@ -55,7 +60,7 @@ class JsonStoragePlugin(BaseStoragePlugin):
         raw_data.pop(username, None)
         self._save_raw_data(raw_data)
 
-    def remove_user_dataset(self, username: str, dataset_name: str) -> None:
+    def remove_user_record(self, username: str, dataset_name: str) -> None:
         raw_data = self._load_raw_data()
 
         # not raise exception for absent user or dataset, behavior is not specified

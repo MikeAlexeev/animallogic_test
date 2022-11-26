@@ -11,14 +11,19 @@ class OutputSimplePlugin(BaseOutputPlugin):
     def output_user(
         self, username: str, user_records: Dict[str, BaseRecordPlugin]
     ) -> None:
-        for dataset_name, record in sorted(user_records.items()):
-            print(
-                f"user: '{username}', dataset: '{dataset_name}', data: {record.to_dict()}"
-            )
+        for dataset_name, user_record in sorted(user_records.items()):
+            self.output_user_record(username, dataset_name, user_record)
 
-    def output_not_found_error(self, username: str, dataset: Optional[str]) -> None:
-        if dataset:
-            msg = f"record from '{dataset}' dataset for '{username}' user not found"
+    def output_user_record(
+        self, username: str, dataset_name: str, user_record: BaseRecordPlugin
+    ) -> None:
+        print(
+            f"user: '{username}', dataset: '{dataset_name}', data: {user_record.to_dict()}"
+        )
+
+    def output_not_found_error(self, username: str, dataset_name: Optional[str] = None) -> None:
+        if dataset_name:
+            msg = f"record from '{dataset_name}' dataset for '{username}' user not found"
         else:
             msg = f"records for '{username}' user not found"
 

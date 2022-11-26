@@ -10,9 +10,13 @@ class BaseStoragePlugin(BasePlugin):
         self._record_type = record_type
 
     @abstractmethod
-    def get_records_for_user(
-        self, username: str, dataset_name: Optional[str]
+    def get_all_records_for_user(
+        self, username: str
     ) -> Optional[Dict[str, BaseRecordPlugin]]:
+        pass
+
+    @abstractmethod
+    def get_user_record(self, username: str, dataset_name: str) -> Optional[BaseRecordPlugin]:
         pass
 
     @abstractmethod
@@ -20,7 +24,7 @@ class BaseStoragePlugin(BasePlugin):
         pass
 
     @abstractmethod
-    def set(self, username: str, dataset_name: str, record: BaseRecordPlugin) -> None:
+    def set_user_record(self, username: str, dataset_name: str, record: BaseRecordPlugin) -> None:
         pass
 
     @abstractmethod
@@ -28,5 +32,5 @@ class BaseStoragePlugin(BasePlugin):
         pass
 
     @abstractmethod
-    def remove_user_dataset(self, username: str, dataset_name: str) -> None:
+    def remove_user_record(self, username: str, dataset_name: str) -> None:
         pass
