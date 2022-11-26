@@ -8,5 +8,5 @@ setuptools.setup(
     packages=setuptools.find_packages(
         where="source",
     ),
-    entry_points={"console_scripts": ["user-manager=user_manager.cli:main"]},
+    entry_points={"console_scripts": ["user-manager=user_manager.cli.cli:main"]},
 )

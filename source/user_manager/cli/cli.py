@@ -2,8 +2,8 @@ import argparse
 import logging
 from pathlib import Path
 
-from .api.system_configuration import SystemConfiguration
-from .api.user_manager import UserManager
+from ..api.system_configuration import SystemConfiguration
+from ..api.user_manager import UserManager
 
 
 def remove_none_values(data: dict) -> dict:

@@ -1,6 +1,6 @@
 [run]
 omit =
-    source/user_manager/cli.py
+    source/user_manager/cli/cli.py
     source/user_manager/api/base_plugins/base_output_plugin.py
     source/user_manager/api/base_plugins/base_storage_plugin.py
     source/user_manager/default_plugins/output_simple_plugin.py
