@@ -1,14 +1,14 @@
 # code
-black
-flake8
-isort
-mypy
-pep8-naming
+black==22.10.0
+flake8==6.0.0
+isort==5.10.1
+mypy==0.991
+pep8-naming==0.13.2
 
 # build
-wheel
+wheel==0.38.4
 
 # testing
-mock
-pytest
-pytest-cov
+mock==4.0.3
+pytest==7.2.0
+pytest-cov==4.0.0
