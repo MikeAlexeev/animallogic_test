@@ -17,7 +17,7 @@ def output_user(
 def output_all_users(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
-    UserManager(system_configuration=system_configuration).output_users(args)
+    UserManager(system_configuration=system_configuration).output_users()
 
 
 def save_user(
