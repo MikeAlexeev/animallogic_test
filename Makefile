@@ -12,15 +12,15 @@ install-editable:
 
 clean:
 	rm -Rf build dist *.egg-info
-	find . -name '.*.sw?' -delete
+	find . -name '.*.sw?' -o -name __pycache__ -o -name '*.pyc' -delete
 
 build: clean
 	$(VENV_PYTHON) setup.py bdist_wheel
 
-tests:
+tests: install-editable
 	$(VENV_PYTHON) -m pytest -vv --cov=source
 
-coverage:
+coverage: install-editable
 	$(VENV_PYTHON) -m pytest -vv --cov=source --cov-report=html
 
 lint:
