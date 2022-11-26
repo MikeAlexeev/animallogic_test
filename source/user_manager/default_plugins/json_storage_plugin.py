@@ -10,30 +10,56 @@ class JsonStoragePlugin(BaseStoragePlugin):
     NAME = "json"
     STORAGE_PATH = Path("/tmp/users.json")  # defined here for simplicity
 
-    def get(self, username: str) -> Optional[BaseRecordPlugin]:
+    def get_records_for_user(
+        self, username: str, dataset_name: Optional[str]
+    ) -> Optional[Dict[str, BaseRecordPlugin]]:
         raw_data = self._load_raw_data()
         if username not in raw_data:
             return None
-        raw_user_data = raw_data[username]
-        return self._record_type.from_dict(raw_user_data)
 
-    def get_all(self) -> Dict[str, BaseRecordPlugin]:
-        raw_data = self._load_raw_data()
+        user_data = raw_data[username]
+        if dataset_name and dataset_name not in user_data:
+            return None
+
+        if dataset_name:
+            user_data = {dataset_name: user_data[dataset_name]}
+
         return {
-            username: self._record_type.from_dict(raw_user_data)
-            for username, raw_user_data in raw_data.items()
+            dataset_name: self._record_type.from_dict(data)
+            for dataset_name, data in user_data.items()
         }
 
-    def set(self, username: str, record: BaseRecordPlugin) -> None:
+    def get_all_users_records(self) -> Dict[str, Dict[str, BaseRecordPlugin]]:
+        raw_data = self._load_raw_data()
+
+        parsed_data: Dict[str, Dict[str, BaseRecordPlugin]] = {}
+        for username, user_datasets in raw_data.items():
+            parsed_data[username] = {}
+            for dataset_name, data in user_datasets.items():
+                parsed_data[username][dataset_name] = self._record_type.from_dict(data)
+
+        return parsed_data
+
+    def set(self, username: str, dataset_name: str, record: BaseRecordPlugin) -> None:
         raw = self._load_raw_data()
-        raw[username] = record.to_dict()
+        if username not in raw:
+            raw[username] = {}
+
+        raw[username][dataset_name] = record.to_dict()
         self._save_raw_data(raw)
 
-    def remove(self, username: str) -> None:
+    def remove_user(self, username: str) -> None:
         raw_data = self._load_raw_data()
-        raw_data.pop(
-            username, None
-        )  # not raise exception for absent user, behavior is not specified
+
+        # not raise exception for absent user, behavior is not specified
+        raw_data.pop(username, None)
+        self._save_raw_data(raw_data)
+
+    def remove_user_dataset(self, username: str, dataset_name: str) -> None:
+        raw_data = self._load_raw_data()
+
+        # not raise exception for absent user or dataset, behavior is not specified
+        raw_data.get(username, {}).pop(dataset_name, None)
         self._save_raw_data(raw_data)
 
     def _load_raw_data(self) -> dict:

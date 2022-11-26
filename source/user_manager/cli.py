@@ -11,7 +11,9 @@ from .plugin_system.system_configuration import SystemConfiguration
 def output_user(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
-    UserManager(system_configuration=system_configuration).output_user(args.username)
+    UserManager(system_configuration=system_configuration).output_user(
+        args.username, args.dataset
+    )
 
 
 def output_all_users(
@@ -24,14 +26,16 @@ def save_user(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
     UserManager(system_configuration=system_configuration).save_user(
-        args.username, vars(args)
+        args.username, args.dataset, vars(args)
     )
 
 
 def remove_user(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
-    UserManager(system_configuration=system_configuration).remove_user(args.username)
+    UserManager(system_configuration=system_configuration).remove_user(
+        args.username, args.dataset
+    )
 
 
 def list_plugins(
@@ -73,6 +77,11 @@ def parse_args() -> argparse.Namespace:
 
     for sub_parser in [save_parser, output_parser, remove_parser]:
         sub_parser.add_argument("username")
+
+    for sub_parser in [output_parser, remove_parser]:
+        sub_parser.add_argument("dataset", nargs="?")
+
+    save_parser.add_argument("dataset", nargs="?", default="personal")
 
     save_parser.add_argument("--phone-number")
     save_parser.add_argument("--address")
