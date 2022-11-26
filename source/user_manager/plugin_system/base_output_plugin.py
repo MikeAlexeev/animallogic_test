@@ -6,5 +6,9 @@ from .base_record_plugin import BaseRecordPlugin
 
 class BaseOutputPlugin(BasePlugin):
     @abstractmethod
-    def do_output(self, username: str, record: BaseRecordPlugin) -> None:
+    def output_user(self, username: str, record: BaseRecordPlugin) -> None:
+        pass
+
+    @abstractmethod
+    def output_not_found_error(self, username: str) -> None:
         pass
