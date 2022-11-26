@@ -10,14 +10,10 @@ from user_manager.default_plugins.user_record_plugin import UserRecordPlugin
 
 
 class _TestStorage:
-    _instance = None
-
     @classmethod
     def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super().__new__(cls)
-
-        return cls._instance
+        # workaround for __new__ patch problem (https://github.com/pytest-dev/pytest/discussions/8009)
+        return super().__new__(cls)
 
     def __init__(self, record_type: Type[BaseRecordPlugin]):
         self._data = {}
@@ -49,9 +45,7 @@ class _TestStorage:
 
 @pytest.fixture
 def test_storage() -> _TestStorage:
-    test_storage = _TestStorage(record_type=UserRecordPlugin)
-    test_storage._data = {}
-    return test_storage
+    return _TestStorage(record_type=UserRecordPlugin)
 
 
 def test_user_manager_save_user(test_storage):
@@ -59,7 +53,7 @@ def test_user_manager_save_user(test_storage):
 
     with mock.patch.object(
         system_configuration, "get_storage_cls", return_value=type(test_storage)
-    ):
+    ), mock.patch.object(_TestStorage, '__new__', return_value=test_storage):
         user_manager = UserManager(system_configuration)
 
     user_manager.save_user(
@@ -82,8 +76,8 @@ def test_user_manager_save_user(test_storage):
 def test_user_manager_remove_user(test_storage):
     system_configuration = SystemConfiguration()
     with mock.patch.object(
-        system_configuration, "get_storage_cls", return_value=type(test_storage)
-    ):
+        system_configuration, "get_storage_cls", return_value=_TestStorage,
+    ), mock.patch.object(_TestStorage, '__new__', return_value=test_storage):
         user_manager = UserManager(system_configuration)
 
     user_manager.save_user(
