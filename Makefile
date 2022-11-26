@@ -30,3 +30,6 @@ lint:
 format:
 	$(VENV_BIN)/isort .
 	$(VENV_BIN)/black .
+
+example:
+	./example.sh

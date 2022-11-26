@@ -14,5 +14,4 @@ from user_manager import utils
     ],
 )
 def test_convert_path_to_module_name(path: str, module_name: str):
-    print(Path(path))
     assert utils.convert_path_to_module_name(Path(path)) == module_name
