@@ -21,7 +21,7 @@ def make_random_string(length: int = 8) -> str:
 
 @pytest.fixture
 def tmp_storage_path(tmp_path: Path) -> Path:
-    return tmp_path / 'storage.json'
+    return tmp_path / "storage.json"
 
 
 def test_cli_integration_basic(tmp_storage_path):
@@ -61,7 +61,9 @@ def test_cli_integration_basic(tmp_storage_path):
 
     assert _get_entries_count(tmp_storage_path) == 3
 
-    run_cmd(f"user-manager remove {username_1} personal --storage-path {tmp_storage_path}")
+    run_cmd(
+        f"user-manager remove {username_1} personal --storage-path {tmp_storage_path}"
+    )
     assert _get_entries_count(tmp_storage_path) == 2
 
     search_output = run_cmd(

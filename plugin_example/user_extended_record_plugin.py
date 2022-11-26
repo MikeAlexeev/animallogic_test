@@ -6,6 +6,6 @@ from user_manager.default_plugins.user_record_plugin import UserRecordPlugin
 
 @dataclass
 class ExtendedUserRecordPlugin(UserRecordPlugin):
-    NAME: str = "extended-user"
+    NAME: str = "user-extended"
 
     email: Optional[str] = None

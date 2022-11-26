@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, Optional
 
 from .system_configuration import SystemConfiguration
@@ -5,25 +6,30 @@ from .system_configuration import SystemConfiguration
 
 class UserManager:
     def __init__(self, system_configuration: SystemConfiguration):
-        self._record_cls = system_configuration.get_record_cls()
-        self._output = system_configuration.get_output_cls()()
-        self._storage = system_configuration.get_storage_cls()(
-            record_type=self._record_cls
-        )
+        self._system_configuration = system_configuration
 
     def save_user(
         self, username: str, dataset_name: str, values: Dict[str, str]
     ) -> None:
         existing_user_record = self._storage.get_user_record(username, dataset_name)
         if existing_user_record:
+            self._logger.info(
+                f"updating existing record for '{username}' in dataset '{dataset_name}', values: {values}"
+            )
             merged_data = {**existing_user_record.to_dict(), **values}
         else:
+            self._logger.info(
+                f"creating new record for '{username}' in dataset '{dataset_name}', values: {values}"
+            )
             merged_data = values
 
         record = self._record_cls.from_dict(merged_data)
         self._storage.set_user_record(username, dataset_name, record)
 
     def output_user(self, username: str, dataset_name: Optional[str] = None) -> None:
+        self._logger.info(
+            f"printing '{username}', dataset: '{dataset_name or 'not set'}'"
+        )
         if dataset_name is not None:
             record = self._storage.get_user_record(username, dataset_name)
             if not record:
@@ -42,17 +48,38 @@ class UserManager:
         self._output.output_user(username, user_records)
 
     def output_users(self) -> None:
+        self._logger.info("printing all users")
         users_records = self._storage.get_all_users_records()
-        if not users_records:
-            return
-
         self._output.output_users(users_records)
 
-    def search_users(self, filters: Dict[str, str]) -> None:
+    def search_users(self, **filters: Dict[str, str]) -> None:
+        self._logger.info(f"searching users with filters: {filters}")
         self._output.output_users(self._storage.search_users(filters))
 
-    def remove_user(self, username: str, dataset: Optional[str] = None) -> None:
-        if dataset:
-            self._storage.remove_user_record(username, dataset)
+    def remove_user(self, username: str, dataset_name: Optional[str] = None) -> None:
+        if dataset_name:
+            self._logger.info(f"removing '{username}' from dataset: '{dataset_name}'")
+            self._storage.remove_user_record(username, dataset_name)
         else:
+            self._logger.info(f"removing '{username}' from all datasets")
             self._storage.remove_user(username)
+
+    @property
+    def _logger(self) -> logging.Logger:
+        return logging.getLogger(__name__)
+
+    @property
+    def _record_cls(self):
+        return self._system_configuration.get_record_cls()
+
+    @property
+    def _output(self):
+        # instantiate it for simplicity
+        return self._system_configuration.get_output_cls()()
+
+    @property
+    def _storage(self):
+        # instantiate it for simplicity
+        return self._system_configuration.get_storage_cls()(
+            record_type=self._record_cls
+        )

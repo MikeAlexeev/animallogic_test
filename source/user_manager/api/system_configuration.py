@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import List, Optional, Type, cast
 
@@ -37,12 +38,15 @@ class SystemConfiguration:
         return Path(__file__).parent.parent / "default_plugins"
 
     def set_output_implementation_name(self, implementation_name: str) -> None:
+        self._logger.info(f"set output implementation: '{implementation_name}'")
         self._output_implementation_name = implementation_name
 
     def set_storage_implementation_name(self, implementation_name: str) -> None:
+        self._logger.info(f"set storage implementation: '{implementation_name}'")
         self._storage_implementation_name = implementation_name
 
     def set_record_implementation_name(self, implementation_name: str) -> None:
+        self._logger.info(f"set record implementation: '{implementation_name}'")
         self._record_implementation_name = implementation_name
 
     @property
@@ -72,6 +76,12 @@ class SystemConfiguration:
     ) -> Type[BasePlugin]:
         plugins = self._plugin_registry.get_registered_subclasses(plugin_type)
         if len(plugins) != 1:
-            raise RuntimeError("must be called after default plugins loading")
+            raise RuntimeError(
+                "must be called after default plugins loading and before other plugis loaded"
+            )
 
         return plugins[0]
+
+    @property
+    def _logger(self) -> logging.Logger:
+        return logging.getLogger(__name__)

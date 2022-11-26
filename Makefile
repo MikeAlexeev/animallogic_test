@@ -34,5 +34,5 @@ format:
 example-cli:
 	./example_cli.sh
 
-example-api:
+example-api: venv install-editable
 	$(VENV_PYTHON) ./example_api.py
