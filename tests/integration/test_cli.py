@@ -16,6 +16,10 @@ def make_random_string(length: int = 8) -> str:
 
 
 def test_cli_integration_basic():
+    def _get_entries_count(storage_path) -> int:
+        all_output = run_cmd(f"user-manager get-all --storage-path {storage_path}")
+        return len(all_output.strip().split('\n'))
+
     username_1 = make_random_string()
     username_2 = make_random_string()
 
@@ -34,7 +38,20 @@ def test_cli_integration_basic():
         f"user-manager get {username_1} work --storage-path {storage_path}"
     )
 
+    assert _get_entries_count(storage_path) == 2
+
     run_cmd(f"user-manager set {username_2} --storage-path {storage_path} --phone-number +123")
     assert "+123" in run_cmd(
         f"user-manager get {username_2} --storage-path {storage_path}"
     )
+
+    assert _get_entries_count(storage_path) == 3
+
+    run_cmd(f"user-manager remove {username_1} personal --storage-path {storage_path}")
+    assert _get_entries_count(storage_path) == 2
+
+    search_output = run_cmd(f"user-manager search --storage-path {storage_path} --address city2")
+    assert username_1 in search_output
+
+    run_cmd(f"user-manager remove {username_1} --storage-path {storage_path}")
+    assert _get_entries_count(storage_path) == 1
