@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Optional, Type
 
-from .base_record_plugin import BaseRecordPlugin
 from .base_plugin import BasePlugin
+from .base_record_plugin import BaseRecordPlugin
 
 
 class BaseStoragePlugin(BasePlugin):

@@ -24,8 +24,6 @@ lint:
 	$(VENV_BIN)/flake8 .
 	$(VENV_BIN)/mypy -p user_manager
 
-isort:
+format:
 	$(VENV_BIN)/isort .
-
-black:
 	$(VENV_BIN)/black .

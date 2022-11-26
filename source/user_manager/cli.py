@@ -2,53 +2,38 @@ import argparse
 import logging
 import sys
 from pathlib import Path
-from typing import cast, Type
 
 from .plugin_system.plugin_loader import PluginLoader
 from .plugin_system.plugin_registry import PluginRegistry
-from .plugin_system.base_output_plugin import BaseOutputPlugin
-from .plugin_system.base_storage_plugin import BaseStoragePlugin
-from .plugin_system.base_record_plugin import BaseRecordPlugin
+from .plugin_system.system_configuration import SystemConfiguration
 
 
-def output_user(args: argparse.Namespace, plugin_registry: PluginRegistry) -> None:
-    output_impl = plugin_registry.get_implementation_class(
-        BaseOutputPlugin, args.output
-    )
-    storage_impl = plugin_registry.get_implementation_class(
-        BaseStoragePlugin, args.storage
-    )
-    storage_record_impl = plugin_registry.get_implementation_class(
-        BaseRecordPlugin, args.record_type
-    )
-    output_impl = cast(Type[BaseOutputPlugin], output_impl)
-    storage_impl = cast(Type[BaseStoragePlugin], storage_impl)
-    storage_record_impl = cast(Type[BaseRecordPlugin], storage_record_impl)
-    record = storage_impl(record_type=storage_record_impl).get(args.username)
+def output_user(
+    args: argparse.Namespace, system_configuration: SystemConfiguration
+) -> None:
+    output_cls = system_configuration.get_output_implementation()
+    storage_cls = system_configuration.get_storage_implementation()
+    record_cls = system_configuration.get_record_implementation()
+
+    record = storage_cls(record_type=record_cls).get(args.username)
     if not record:
-        print(f'record for {args.username} doesn`t exist', file=sys.stderr)
+        print(f"record for {args.username} doesn`t exist", file=sys.stderr)
         exit(1)
-    output_impl().do_output(args.username, record)
+    output_cls().do_output(args.username, record)
 
 
-def set_user(args: argparse.Namespace, plugin_registry: PluginRegistry) -> None:
-    storage_impl = plugin_registry.get_implementation_class(
-        BaseStoragePlugin, args.storage
-    )
-    storage_record_impl = plugin_registry.get_implementation_class(
-        BaseRecordPlugin, args.record_type
-    )
-    storage_impl = cast(Type[BaseStoragePlugin], storage_impl)
-    storage_record_impl = cast(Type[BaseRecordPlugin], storage_record_impl)
-    storage = storage_impl(record_type=storage_record_impl)
-
-    existing_record = storage_impl(record_type=storage_record_impl).get(args.username)
-    data = vars(args)
+def set_user(
+    args: argparse.Namespace, system_configuration: SystemConfiguration
+) -> None:
+    storage_cls = system_configuration.get_storage_implementation()
+    record_cls = system_configuration.get_record_implementation()
+    existing_record = storage_cls(record_type=record_cls).get(args.username)
+    data = {key: val for key, val in vars(args).items() if val is not None}
     if existing_record:
         data = {**existing_record.to_dict(), **data}
 
-    record = storage_record_impl.from_dict(data)
-    storage.set(args.username, record)
+    record = record_cls.from_dict(data)
+    storage_cls(record_type=record_cls).set(args.username, record)
 
 
 def list_plugins(args: argparse.Namespace, plugin_registry: PluginRegistry) -> None:
@@ -69,17 +54,16 @@ def parse_args() -> argparse.Namespace:
     set_parser = subparsers.add_parser("set")
     set_parser.set_defaults(func=set_user)
 
-    output_parser.add_argument("--output", default="simple")
-    output_parser.add_argument("--storage", default="json")
-    output_parser.add_argument("--record-type", default="user-record")
-    output_parser.add_argument("username")
+    for sub_parser in [output_parser, set_parser, list_parser]:
+        # args not actualy used in list_parser. Added for unification and simplicity
+        sub_parser.add_argument("--output-type", default="simple")
+        sub_parser.add_argument("--storage-type", default="json")
+        sub_parser.add_argument("--record-type", default="user-record")
 
-    set_parser.add_argument("--output", default="simple")
-    set_parser.add_argument("--storage", default="json")
-    set_parser.add_argument("--record-type", default="user-record")
     set_parser.add_argument("--phone-number")
     set_parser.add_argument("--address")
     set_parser.add_argument("username")
+    output_parser.add_argument("username")
 
     return parser.parse_args()
 
@@ -98,4 +82,10 @@ def main() -> None:
     for plugin in plugins:
         plugin_registry.register_plugin(plugin)
 
-    args.func(args, plugin_registry)
+    system_configuration = SystemConfiguration(
+        plugin_registry,
+        output_implementation_name=args.output_type,
+        storage_implementation_name=args.storage_type,
+        record_implementation_name=args.record_type,
+    )
+    args.func(args, system_configuration)
