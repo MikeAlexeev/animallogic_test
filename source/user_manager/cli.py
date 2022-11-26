@@ -14,6 +14,12 @@ def output_user(
     UserManager(system_configuration=system_configuration).output_user(args.username)
 
 
+def output_all_users(
+    args: argparse.Namespace, system_configuration: SystemConfiguration
+) -> None:
+    UserManager(system_configuration=system_configuration).output_users(args)
+
+
 def save_user(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
@@ -43,15 +49,23 @@ def parse_args() -> argparse.Namespace:
     subparsers = parser.add_subparsers(dest="command")
     save_parser = subparsers.add_parser("set")
     output_parser = subparsers.add_parser("get")
+    output_all_parser = subparsers.add_parser("get-all")
     remove_parser = subparsers.add_parser("remove")
     list_parser = subparsers.add_parser("list-plugins")
 
     save_parser.set_defaults(func=save_user)
     output_parser.set_defaults(func=output_user)
+    output_all_parser.set_defaults(func=output_all_users)
     remove_parser.set_defaults(func=remove_user)
     list_parser.set_defaults(func=list_plugins)
 
-    for sub_parser in [save_parser, output_parser, remove_parser, list_parser]:
+    for sub_parser in [
+        save_parser,
+        output_parser,
+        output_all_parser,
+        remove_parser,
+        list_parser,
+    ]:
         # args not actualy used in all sub parsers. Added for unification and simplicity
         sub_parser.add_argument("--output-type", default="simple")
         sub_parser.add_argument("--storage-type", default="json")

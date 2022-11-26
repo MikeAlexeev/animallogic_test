@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Optional, Type
+from typing import Dict, Optional, Type
 
 from .base_plugin import BasePlugin
 from .base_record_plugin import BaseRecordPlugin
@@ -11,6 +11,10 @@ class BaseStoragePlugin(BasePlugin):
 
     @abstractmethod
     def get(self, username: str) -> Optional[BaseRecordPlugin]:
+        pass
+
+    @abstractmethod
+    def get_all(self) -> Dict[str, BaseRecordPlugin]:
         pass
 
     @abstractmethod

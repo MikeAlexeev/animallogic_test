@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 from user_manager.plugin_system.base_record_plugin import BaseRecordPlugin
 from user_manager.plugin_system.base_storage_plugin import BaseStoragePlugin
@@ -15,7 +15,14 @@ class JsonStoragePlugin(BaseStoragePlugin):
         if username not in raw_data:
             return None
         raw_user_data = raw_data[username]
-        return self._record_type(**raw_user_data)
+        return self._record_type.from_dict(raw_user_data)
+
+    def get_all(self) -> Dict[str, BaseRecordPlugin]:
+        raw_data = self._load_raw_data()
+        return {
+            username: self._record_type.from_dict(raw_user_data)
+            for username, raw_user_data in raw_data.items()
+        }
 
     def set(self, username: str, record: BaseRecordPlugin) -> None:
         raw = self._load_raw_data()

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from ..plugin_system.system_configuration import SystemConfiguration
 
 
@@ -27,6 +29,10 @@ class UserManager:
             return
 
         self._output.output_user(username, record)
+
+    def output_users(self, filters: Optional[dict] = None) -> None:
+        for username, record in sorted(self._storage.get_all().items()):
+            self._output.output_user(username, record)
 
     def remove_user(self, username: str) -> None:
         self._storage.remove(username)
