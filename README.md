@@ -29,7 +29,8 @@ or run `make coverage` for html coverage report  (saved to htmlcov/index.html)
 ## how to develop
 
 use make targets:
-    * install-editable
-    * format
-    * lint
-    * coverage
+
+* install-editable
+* format
+* lint
+* coverage
