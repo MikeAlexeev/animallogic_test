@@ -1,6 +1,8 @@
-from typing import List, Type, cast
+from pathlib import Path
+from typing import List, Optional, Type, cast
 
 from ..plugin_system.base_plugin import BasePlugin
+from ..plugin_system.plugin_loader import PluginLoader
 from ..plugin_system.plugin_registry import PluginRegistry
 from .base_plugins.base_output_plugin import BaseOutputPlugin
 from .base_plugins.base_record_plugin import BaseRecordPlugin
@@ -8,17 +10,40 @@ from .base_plugins.base_storage_plugin import BaseStoragePlugin
 
 
 class SystemConfiguration:
-    def __init__(
-        self,
-        plugin_registry: PluginRegistry,
-        output_implementation_name: str,
-        storage_implementation_name: str,
-        record_implementation_name: str,
-    ):
-        self._plugin_registry = plugin_registry
-        self._output_implementation_name = output_implementation_name
-        self._storage_implementation_name = storage_implementation_name
-        self._record_implementation_name = record_implementation_name
+    def __init__(self, plugin_folders: Optional[List[Path]] = None):
+        self._plugin_registry = PluginRegistry()
+
+        self.load_plugins(self.default_plugins_path)
+        self.set_output_implementation_name(
+            self._get_default_implementation_cls(BaseOutputPlugin).NAME
+        )
+        self.set_storage_implementation_name(
+            self._get_default_implementation_cls(BaseStoragePlugin).NAME
+        )
+        self.set_record_implementation_name(
+            self._get_default_implementation_cls(BaseRecordPlugin).NAME
+        )
+
+        for path in plugin_folders or []:
+            self.load_plugins(path)
+
+    def load_plugins(self, plugins_folder: Path) -> None:
+        loader = PluginLoader()
+        for plugin in loader.load_plugins(plugins_folder):
+            self._plugin_registry.register_plugin(plugin)
+
+    @property
+    def default_plugins_path(self) -> Path:
+        return Path(__file__).parent.parent / "default_plugins"
+
+    def set_output_implementation_name(self, implementation_name: str) -> None:
+        self._output_implementation_name = implementation_name
+
+    def set_storage_implementation_name(self, implementation_name: str) -> None:
+        self._storage_implementation_name = implementation_name
+
+    def set_record_implementation_name(self, implementation_name: str) -> None:
+        self._record_implementation_name = implementation_name
 
     @property
     def plugins(self) -> List[Type[BasePlugin]]:
@@ -41,3 +66,12 @@ class SystemConfiguration:
             BaseRecordPlugin, self._record_implementation_name
         )
         return cast(Type[BaseRecordPlugin], plug)
+
+    def _get_default_implementation_cls(
+        self, plugin_type: Type[BasePlugin]
+    ) -> Type[BasePlugin]:
+        plugins = self._plugin_registry.get_registered_subclasses(plugin_type)
+        if len(plugins) != 1:
+            raise RuntimeError("must be called after default plugins loading")
+
+        return plugins[0]

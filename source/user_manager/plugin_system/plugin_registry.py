@@ -13,11 +13,17 @@ class PluginRegistry:
     def get_implementation_class(
         self, base_class: Type[BasePlugin], implementation_name: str
     ) -> Type[BasePlugin]:
-        for plug in self._plugins:
-            if issubclass(plug, base_class) and plug.NAME == implementation_name:
+
+        for plug in self.get_registered_subclasses(base_class):
+            if plug.NAME == implementation_name:
                 return plug
 
         raise RuntimeError(f"implementation not found for {base_class}")
+
+    def get_registered_subclasses(
+        self, base_class: Type[BasePlugin]
+    ) -> List[Type[BasePlugin]]:
+        return [plug for plug in self._plugins if issubclass(plug, base_class)]
 
     @property
     def plugins(self) -> List[Type[BasePlugin]]:

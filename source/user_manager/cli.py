@@ -4,8 +4,6 @@ from pathlib import Path
 
 from .api.system_configuration import SystemConfiguration
 from .api.user_manager import UserManager
-from .plugin_system.plugin_loader import PluginLoader
-from .plugin_system.plugin_registry import PluginRegistry
 
 
 def remove_none_values(data: dict) -> dict:
@@ -86,9 +84,9 @@ def parse_args() -> argparse.Namespace:
         list_parser,
     ]:
         # args not actualy used in all sub parsers. Added for unification and simplicity
-        sub_parser.add_argument("--output-type", default="simple")
-        sub_parser.add_argument("--storage-type", default="json")
-        sub_parser.add_argument("--record-type", default="user-record")
+        sub_parser.add_argument("--output-type")
+        sub_parser.add_argument("--storage-type")
+        sub_parser.add_argument("--record-type")
 
     for sub_parser in [save_parser, output_parser, remove_parser]:
         sub_parser.add_argument("username")
@@ -111,19 +109,15 @@ def main() -> None:
     log_level = logging.getLevelName(args.log_level)
     logging.basicConfig(level=log_level)
 
-    loader = PluginLoader()
-    plugins = loader.load_plugins(loader.default_plugins_folder)
-    if args.plugin_dir:
-        plugins.extend(loader.load_plugins(args.plugin_dir))
-
-    plugin_registry = PluginRegistry()
-    for plugin in plugins:
-        plugin_registry.register_plugin(plugin)
-
     system_configuration = SystemConfiguration(
-        plugin_registry,
-        output_implementation_name=args.output_type,
-        storage_implementation_name=args.storage_type,
-        record_implementation_name=args.record_type,
+        [args.plugin_dir] if args.plugin_dir else [],
     )
+
+    if args.output_type:
+        system_configuration.set_output_implementation_name(args.output_type)
+    if args.storage_type:
+        system_configuration.set_storage_implementation_name(args.storage_type)
+    if args.record_type:
+        system_configuration.set_record_implementation_name(args.record_type)
+
     args.func(args, system_configuration)

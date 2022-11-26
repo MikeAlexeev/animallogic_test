@@ -1,8 +1,8 @@
 import sys
 from typing import Dict, Optional
 
-from ..api.base_plugins.base_output_plugin import BaseOutputPlugin
-from ..api.base_plugins.base_record_plugin import BaseRecordPlugin
+from user_manager.api.base_plugins.base_output_plugin import BaseOutputPlugin
+from user_manager.api.base_plugins.base_record_plugin import BaseRecordPlugin
 
 
 class OutputSimplePlugin(BaseOutputPlugin):

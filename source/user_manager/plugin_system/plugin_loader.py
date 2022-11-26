@@ -28,10 +28,6 @@ class PluginLoader:
 
         return all_plugins
 
-    @property
-    def default_plugins_folder(self) -> Path:
-        return Path(__file__).parent.parent / "default_plugins"
-
     def _load_module(self, path: Path) -> Optional[ModuleType]:
         module_name = convert_path_to_module_name(path)
         self._logger.debug(f'loading "{path}" as module "{module_name}"')

@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 from typing import Dict, Optional, Set
 
-from ..api.base_plugins.base_record_plugin import BaseRecordPlugin
-from ..api.base_plugins.base_storage_plugin import BaseStoragePlugin
+from user_manager.api.base_plugins.base_record_plugin import BaseRecordPlugin
+from user_manager.api.base_plugins.base_storage_plugin import BaseStoragePlugin
 
 
 class FilterMatcher:
