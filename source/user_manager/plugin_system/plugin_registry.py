@@ -18,7 +18,9 @@ class PluginRegistry:
             if plug.NAME == implementation_name:
                 return plug
 
-        raise RuntimeError(f"implementation not found for {base_class}")
+        raise RuntimeError(
+            f"implementation not found for {base_class}, requested {implementation_name}"
+        )
 
     def get_registered_subclasses(
         self, base_class: Type[BasePlugin]

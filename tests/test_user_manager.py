@@ -34,9 +34,7 @@ class _TestStorage:
     def get_all_records_for_user(self, username: str) -> Dict[str, BaseRecordPlugin]:
         return self._data.get(username, {})
 
-    def remove_user_record(
-        self, username: str, dataset_name: str
-    ) -> None:
+    def remove_user_record(self, username: str, dataset_name: str) -> None:
         self._data.get(username, {}).pop(dataset_name, None)
 
     def remove_user(self, username: str) -> None:
@@ -53,7 +51,7 @@ def test_user_manager_save_user(test_storage):
 
     with mock.patch.object(
         system_configuration, "get_storage_cls", return_value=type(test_storage)
-    ), mock.patch.object(_TestStorage, '__new__', return_value=test_storage):
+    ), mock.patch.object(_TestStorage, "__new__", return_value=test_storage):
         user_manager = UserManager(system_configuration)
 
     user_manager.save_user(
@@ -76,8 +74,10 @@ def test_user_manager_save_user(test_storage):
 def test_user_manager_remove_user(test_storage):
     system_configuration = SystemConfiguration()
     with mock.patch.object(
-        system_configuration, "get_storage_cls", return_value=_TestStorage,
-    ), mock.patch.object(_TestStorage, '__new__', return_value=test_storage):
+        system_configuration,
+        "get_storage_cls",
+        return_value=_TestStorage,
+    ), mock.patch.object(_TestStorage, "__new__", return_value=test_storage):
         user_manager = UserManager(system_configuration)
 
     user_manager.save_user(

@@ -124,4 +124,4 @@ class JsonStoragePlugin(BaseStoragePlugin):
     def _save_raw_data(self, data: dict) -> None:
         with self.STORAGE_PATH.open("w") as f:
             # TODO use temp file, then move
-            json.dump(data, f)
+            json.dump(data, f, indent=2)

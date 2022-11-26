@@ -6,7 +6,7 @@ from user_manager.api.base_plugins.base_record_plugin import BaseRecordPlugin
 
 @dataclass
 class UserRecordPlugin(BaseRecordPlugin):
-    NAME: str = "user-record"
+    NAME: str = "user"
 
     address: Optional[str] = None
 

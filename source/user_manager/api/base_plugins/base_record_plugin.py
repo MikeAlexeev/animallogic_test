@@ -1,4 +1,5 @@
 from dataclasses import asdict, dataclass, fields
+from typing import List
 
 from ...plugin_system.base_plugin import BasePlugin
 
@@ -7,11 +8,14 @@ from ...plugin_system.base_plugin import BasePlugin
 class BaseRecordPlugin(BasePlugin):
     @classmethod
     def from_dict(cls, data: dict) -> "BaseRecordPlugin":
-        field_names = [field.name for field in fields(cls)]
-        values = {key: val for key, val in data.items() if key in field_names}
+        values = {key: val for key, val in data.items() if key in cls.get_field_names()}
         return cls(**values)
 
     def to_dict(self) -> dict:
         data = asdict(self)
         data.pop("NAME", None)
         return data
+
+    @classmethod
+    def get_field_names(cls) -> List[str]:
+        return [field.name for field in fields(cls)]

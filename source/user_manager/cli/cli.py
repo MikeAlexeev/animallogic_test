@@ -4,6 +4,7 @@ from pathlib import Path
 
 from ..api.system_configuration import SystemConfiguration
 from ..api.user_manager import UserManager
+from .dynamic_args_loader import DynamicArgsLoader
 
 
 def remove_none_values(data: dict) -> dict:
@@ -55,9 +56,9 @@ def list_plugins(
         print(plug)
 
 
-def parse_args() -> argparse.Namespace:
+def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--plugin-dir", type=Path)
+    parser.add_argument("--plugins-dir", type=Path)
     parser.add_argument("--log-level", default="ERROR")
 
     subparsers = parser.add_subparsers(dest="command")
@@ -94,30 +95,32 @@ def parse_args() -> argparse.Namespace:
     for sub_parser in [output_parser, remove_parser]:
         sub_parser.add_argument("dataset", nargs="?")
 
-    for sub_parser in [save_parser, search_parser]:
-        sub_parser.add_argument("--phone-number")
-        sub_parser.add_argument("--address")
-
     save_parser.add_argument("dataset", nargs="?", default="personal")
     search_parser.add_argument("--username")
 
-    return parser.parse_args()
-
-
-def main() -> None:
-    args = parse_args()
+    # two rounds of args parsing
+    # first - load plugins and get record type name
+    # second - parse with known record model fields
+    args, _ = parser.parse_known_args()
     log_level = logging.getLevelName(args.log_level)
     logging.basicConfig(level=log_level)
 
     system_configuration = SystemConfiguration(
-        [args.plugin_dir] if args.plugin_dir else [],
+        [args.plugins_dir] if args.plugins_dir else [],
     )
 
+    if args.record_type:
+        system_configuration.set_record_implementation_name(args.record_type)
     if args.output_type:
         system_configuration.set_output_implementation_name(args.output_type)
     if args.storage_type:
         system_configuration.set_storage_implementation_name(args.storage_type)
-    if args.record_type:
-        system_configuration.set_record_implementation_name(args.record_type)
 
+    dyn_args_loader = DynamicArgsLoader(system_configuration)
+    for arg_name in dyn_args_loader.get_record_args():
+        save_parser.add_argument(arg_name)
+        search_parser.add_argument(arg_name)
+
+    # the second round
+    args = parser.parse_args()
     args.func(args, system_configuration)
