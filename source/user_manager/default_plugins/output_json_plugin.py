@@ -19,22 +19,18 @@ class OutputJsonPlugin(BaseOutputPlugin):
     def output_user(
         self, username: str, user_records: Dict[str, BaseRecordPlugin]
     ) -> None:
-        self.output_users({username: user_records})
+        self._do_output({username: user_records})
 
     def output_users(
         self, users_records: Dict[str, Dict[str, BaseRecordPlugin]]
     ) -> None:
-        print(self._dump_json(users_records))
+        self._do_output(users_records)
 
     def output_user_record(
         self, username: str, dataset_name: str, user_record: BaseRecordPlugin
     ) -> None:
-        data = {
-            username: {
-                dataset_name: user_record
-            }
-        }
-        self.output_users(data)
+        data = {username: {dataset_name: user_record}}
+        self._do_output(data)
 
     def output_not_found_error(
         self, username: str, dataset_name: Optional[str] = None
@@ -46,7 +42,10 @@ class OutputJsonPlugin(BaseOutputPlugin):
         else:
             msg = f"records for '{username}' user not found"
 
-        print(self._dump_json({"error": msg}))
+        self._do_output({"error": msg})
 
     def _dump_json(self, data: dict) -> str:
         return json.dumps(data, indent=2, sort_keys=True, cls=RecordJsonEncoder)
+
+    def _do_output(self, data: Any) -> None:
+        print(self._dump_json(data))
