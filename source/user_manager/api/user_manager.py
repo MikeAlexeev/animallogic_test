@@ -1,6 +1,9 @@
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, Type
 
+from .base_plugins.base_output_plugin import BaseOutputPlugin
+from .base_plugins.base_record_plugin import BaseRecordPlugin
+from .base_plugins.base_storage_plugin import BaseStoragePlugin
 from .system_configuration import SystemConfiguration
 
 
@@ -52,7 +55,7 @@ class UserManager:
         users_records = self._storage.get_all_users_records()
         self._output.output_users(users_records)
 
-    def search_users(self, **filters: Dict[str, str]) -> None:
+    def search_users(self, **filters: str) -> None:
         self._logger.info(f"searching users with filters: {filters}")
         self._output.output_users(self._storage.search_users(filters))
 
@@ -69,16 +72,16 @@ class UserManager:
         return logging.getLogger(__name__)
 
     @property
-    def _record_cls(self):
+    def _record_cls(self) -> Type[BaseRecordPlugin]:
         return self._system_configuration.get_record_cls()
 
     @property
-    def _output(self):
+    def _output(self) -> BaseOutputPlugin:
         # instantiate it for simplicity
         return self._system_configuration.get_output_cls()()
 
     @property
-    def _storage(self):
+    def _storage(self) -> BaseStoragePlugin:
         # instantiate it for simplicity
         return self._system_configuration.get_storage_cls()(
             record_type=self._record_cls

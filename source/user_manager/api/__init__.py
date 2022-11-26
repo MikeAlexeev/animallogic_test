@@ -5,9 +5,9 @@ from .system_configuration import SystemConfiguration
 from .user_manager import UserManager
 
 __all__ = [
-    'BaseOutputPlugin',
-    'BaseRecordPlugin',
-    'BaseStoragePlugin',
-    'SystemConfiguration',
-    'UserManager',
+    "BaseOutputPlugin",
+    "BaseRecordPlugin",
+    "BaseStoragePlugin",
+    "SystemConfiguration",
+    "UserManager",
 ]
