@@ -3,10 +3,9 @@ from ..plugin_system.system_configuration import SystemConfiguration
 
 class UserManager:
     def __init__(self, system_configuration: SystemConfiguration):
-        self._system_configuration = system_configuration
-        self._record_cls = self._system_configuration.get_record_cls()
-        self._output = self._system_configuration.get_output_cls()()
-        self._storage = self._system_configuration.get_storage_cls()(record_type=self._record_cls)
+        self._record_cls = system_configuration.get_record_cls()
+        self._output = system_configuration.get_output_cls()()
+        self._storage = system_configuration.get_storage_cls()(record_type=self._record_cls)
 
     def output_user(self, username: str) -> None:
         record = self._storage.get(username)
