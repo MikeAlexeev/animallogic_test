@@ -13,9 +13,7 @@ class UserManager:
 
     def save_user(self, username: str, dataset_name: str, values: dict) -> None:
         data = {key: val for key, val in values.items() if val is not None}
-        existing_user_record = self._storage.get_user_record(
-            username, dataset_name
-        )
+        existing_user_record = self._storage.get_user_record(username, dataset_name)
         if existing_user_record:
             data = {**existing_user_record.to_dict(), **data}
 
@@ -41,12 +39,11 @@ class UserManager:
         self._output.output_user(username, user_records)
 
     def output_users(self, filters: Optional[dict] = None) -> None:
-        all_users_records = self._storage.get_all_users_records()
-        if not all_users_records:
+        users_records = self._storage.get_all_users_records()
+        if not users_records:
             return
 
-        for username, user_records in sorted(all_users_records.items()):
-            self._output.output_user(username, user_records)
+        self._output.output_users(users_records)
 
     def remove_user(self, username: str, dataset: Optional[str]) -> None:
         if dataset:

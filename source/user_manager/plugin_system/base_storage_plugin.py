@@ -16,7 +16,9 @@ class BaseStoragePlugin(BasePlugin):
         pass
 
     @abstractmethod
-    def get_user_record(self, username: str, dataset_name: str) -> Optional[BaseRecordPlugin]:
+    def get_user_record(
+        self, username: str, dataset_name: str
+    ) -> Optional[BaseRecordPlugin]:
         pass
 
     @abstractmethod
@@ -24,7 +26,9 @@ class BaseStoragePlugin(BasePlugin):
         pass
 
     @abstractmethod
-    def set_user_record(self, username: str, dataset_name: str, record: BaseRecordPlugin) -> None:
+    def set_user_record(
+        self, username: str, dataset_name: str, record: BaseRecordPlugin
+    ) -> None:
         pass
 
     @abstractmethod

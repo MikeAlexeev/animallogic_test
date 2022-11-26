@@ -24,7 +24,9 @@ class JsonStoragePlugin(BaseStoragePlugin):
             for dataset_name, data in user_data.items()
         }
 
-    def get_user_record(self, username: str, dataset_name: str) -> Optional[BaseRecordPlugin]:
+    def get_user_record(
+        self, username: str, dataset_name: str
+    ) -> Optional[BaseRecordPlugin]:
         user_records = self.get_all_records_for_user(username)
         if not user_records:
             return None
@@ -45,7 +47,9 @@ class JsonStoragePlugin(BaseStoragePlugin):
 
         return parsed_data
 
-    def set_user_record(self, username: str, dataset_name: str, record: BaseRecordPlugin) -> None:
+    def set_user_record(
+        self, username: str, dataset_name: str, record: BaseRecordPlugin
+    ) -> None:
         raw = self._load_raw_data()
         if username not in raw:
             raw[username] = {}
