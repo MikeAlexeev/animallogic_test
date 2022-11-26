@@ -11,6 +11,7 @@ from user_manager.cli.dynamic_args_loader import DynamicArgsLoader
 class _TestRecordPlugin(BaseRecordPlugin):
     email: str
     age: int
+    phone_number: str
 
 
 def test_dynamic_args_loader():
@@ -23,4 +24,4 @@ def test_dynamic_args_loader():
     ):
         args = dyn_args_loader.get_record_args()
 
-    assert sorted(args) == sorted(['--email', '--age'])
+    assert sorted(args) == sorted(['--email', '--age', '--phone-number'])

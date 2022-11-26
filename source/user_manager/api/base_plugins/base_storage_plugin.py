@@ -9,6 +9,12 @@ class BaseStoragePlugin(BasePlugin):
     def __init__(self, record_type: Type[BaseRecordPlugin]):
         self._record_type = record_type
 
+    @classmethod
+    def set_options(cls, **kwargs: Dict[str, str]) -> None:
+        for opt in cls.get_option_names():
+            if opt in kwargs:
+                setattr(cls, opt, kwargs[opt])
+
     @abstractmethod
     def get_all_records_for_user(
         self, username: str

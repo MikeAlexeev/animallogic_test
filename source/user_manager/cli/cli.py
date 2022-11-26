@@ -89,8 +89,8 @@ def main() -> None:
     search_parser.add_argument("--username")
 
     # two rounds of args parsing
-    # first - load plugins and get record type name
-    # second - parse with known record model fields
+    # first - load plugins and get record type name and storage type name
+    # second - parse with known record model fields and storage fields
     args, _ = parser.parse_known_args()
     log_level = logging.getLevelName(args.log_level)
     logging.basicConfig(level=log_level)
@@ -111,6 +111,19 @@ def main() -> None:
         save_parser.add_argument(arg_name)
         search_parser.add_argument(arg_name)
 
+    for arg_name in dyn_args_loader.get_storage_args():
+        for _parser in [
+            save_parser,
+            output_parser,
+            output_all_parser,
+            remove_parser,
+            search_parser,
+        ]:
+            _parser.add_argument(arg_name)
+
     # the second round of parsing
     args = parser.parse_args()
+
+    system_configuration.get_storage_cls().set_options(**vars(args))
+
     args.func(args, system_configuration)

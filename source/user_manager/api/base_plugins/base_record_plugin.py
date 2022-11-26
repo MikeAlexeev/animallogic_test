@@ -8,7 +8,7 @@ from ...plugin_system.base_plugin import BasePlugin
 class BaseRecordPlugin(BasePlugin):
     @classmethod
     def from_dict(cls, data: dict) -> "BaseRecordPlugin":
-        values = {key: val for key, val in data.items() if key in cls.get_field_names()}
+        values = {key: val for key, val in data.items() if key in cls.get_option_names()}
         return cls(**values)
 
     def to_dict(self) -> dict:
@@ -17,5 +17,5 @@ class BaseRecordPlugin(BasePlugin):
         return data
 
     @classmethod
-    def get_field_names(cls) -> List[str]:
+    def get_option_names(cls) -> List[str]:
         return [field.name for field in fields(cls)]

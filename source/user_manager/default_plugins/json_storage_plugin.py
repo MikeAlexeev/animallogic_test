@@ -1,7 +1,7 @@
 import json
+import os
 import re
-from pathlib import Path
-from typing import Dict, Optional, Set
+from typing import Dict, List, Optional, Set
 
 from user_manager.api.base_plugins.base_record_plugin import BaseRecordPlugin
 from user_manager.api.base_plugins.base_storage_plugin import BaseStoragePlugin
@@ -30,7 +30,12 @@ class FilterMatcher:
 
 class JsonStoragePlugin(BaseStoragePlugin):
     NAME = "json"
-    STORAGE_PATH = Path("/tmp/users.json")  # defined here for simplicity
+
+    storage_path: str = '/tmp/users.json'
+
+    @classmethod
+    def get_option_names(cls) -> List[str]:
+        return ['storage_path']
 
     def get_all_records_for_user(
         self, username: str
@@ -117,13 +122,14 @@ class JsonStoragePlugin(BaseStoragePlugin):
         self._save_raw_data(raw_data)
 
     def _load_raw_data(self) -> dict:
-        if not self.STORAGE_PATH.exists():
+        if not os.path.exists(self.storage_path):
             return {}
 
-        with self.STORAGE_PATH.open() as f:
+        with open(self.storage_path) as f:
             return json.load(f)
 
     def _save_raw_data(self, data: dict) -> None:
-        with self.STORAGE_PATH.open("w") as f:
+        print(self.storage_path)
+        with open(self.storage_path, "w") as f:
             # TODO use temp file, then move
             json.dump(data, f, indent=2)
