@@ -1,8 +1,8 @@
 *.pyc
 *.sw?
 *.egg-info
+.coverage
 build
 dist
-todo
-.coverage
 htmlcov
+todo
