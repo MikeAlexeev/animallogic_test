@@ -21,4 +21,4 @@ jobs:
       run: make lint
 
     - name: Run tests
-      run: .ven/bin/activate && make tests
+      run: source .venv/bin/activate && make tests
