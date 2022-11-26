@@ -2,6 +2,7 @@ import random
 import shlex
 import string
 import subprocess
+import json
 
 
 def run_cmd(cmd: str) -> str:
@@ -55,3 +56,21 @@ def test_cli_integration_basic():
 
     run_cmd(f"user-manager remove {username_1} --storage-path {storage_path}")
     assert _get_entries_count(storage_path) == 1
+
+
+def test_cli_integration_plugin_override():
+    username_1 = make_random_string()
+
+    storage_path = make_random_string()
+    output = run_cmd(
+        f"user-manager --plugins-dir plugin_example --output json get {username_1} --storage-path {storage_path}"
+    )
+
+    assert 'not found' in json.loads(output)['error']
+
+    run_cmd(f"user-manager set {username_1} --storage-path {storage_path} --address city1")
+
+    output = run_cmd(
+        f"user-manager --plugins-dir plugin_example --output json get {username_1} --storage-path {storage_path}"
+    )
+    assert json.loads(output)[username_1]['personal']['address'] == 'city1'
