@@ -41,3 +41,9 @@ user-manager remove user1
 
 echo -e "\n# use json plugin for output"
 user-manager --plugins-dir ./plugin_example --output json get-all
+
+echo -e "\n# use extended user model"
+user-manager --plugins-dir ./plugin_example --record user-extended set user1 work --email email@example.com
+
+echo -e "\n# show user1 info"
+user-manager --plugins-dir ./plugin_example --record user-extended --output json get user1
