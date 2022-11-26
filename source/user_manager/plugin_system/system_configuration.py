@@ -1,5 +1,6 @@
-from typing import Type, cast
+from typing import List, Type, cast
 
+from .base_plugin import BasePlugin
 from .base_output_plugin import BaseOutputPlugin
 from .base_record_plugin import BaseRecordPlugin
 from .base_storage_plugin import BaseStoragePlugin
@@ -18,6 +19,10 @@ class SystemConfiguration:
         self._output_implementation_name = output_implementation_name
         self._storage_implementation_name = storage_implementation_name
         self._record_implementation_name = record_implementation_name
+
+    @property
+    def plugins(self) -> List[Type[BasePlugin]]:
+        return self._plugin_registry.plugins
 
     def get_output_implementation(self) -> Type[BaseOutputPlugin]:
         plug = self._plugin_registry.get_implementation_class(

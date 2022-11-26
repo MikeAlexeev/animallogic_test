@@ -36,8 +36,8 @@ def set_user(
     storage_cls(record_type=record_cls).set(args.username, record)
 
 
-def list_plugins(args: argparse.Namespace, plugin_registry: PluginRegistry) -> None:
-    for plug in plugin_registry.plugins:
+def list_plugins(args: argparse.Namespace, system_configuration: SystemConfiguration) -> None:
+    for plug in system_configuration.plugins:
         print(plug)
 
 
