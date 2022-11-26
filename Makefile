@@ -18,7 +18,10 @@ build: clean
 	$(VENV_PYTHON) setup.py bdist_wheel
 
 tests:
-	$(VENV_PYTHON) -m pytest -vv
+	$(VENV_PYTHON) -m pytest -vv --cov=source
+
+coverage:
+	$(VENV_PYTHON) -m pytest -vv --cov=source --cov-report=html
 
 lint:
 	$(VENV_BIN)/flake8 .

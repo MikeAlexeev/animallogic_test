@@ -1,4 +1,4 @@
-from user_manager.plugin_system.base_output_plugin import BaseOutputPlugin
+from user_manager.api.base_plugins.base_output_plugin import BaseOutputPlugin
 
 
 class Module1Class1(BaseOutputPlugin):
