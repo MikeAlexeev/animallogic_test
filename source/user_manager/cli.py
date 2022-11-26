@@ -8,6 +8,10 @@ from .plugin_system.plugin_registry import PluginRegistry
 from .plugin_system.system_configuration import SystemConfiguration
 
 
+def remove_none_values(data: dict) -> dict:
+    return {key: val for key, val in data.items() if val is not None}
+
+
 def output_user_info(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
@@ -25,14 +29,16 @@ def output_all_users_info(
 def search_users(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
-    UserManager(system_configuration=system_configuration).search_users(vars(args))
+    filters = remove_none_values(vars(args))
+    UserManager(system_configuration=system_configuration).search_users(filters)
 
 
 def save_user(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
+    values = remove_none_values(vars(args))
     UserManager(system_configuration=system_configuration).save_user(
-        args.username, args.dataset, vars(args)
+        args.username, args.dataset, values
     )
 
 

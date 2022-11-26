@@ -11,13 +11,14 @@ class UserManager:
             record_type=self._record_cls
         )
 
-    def save_user(self, username: str, dataset_name: str, values: dict) -> None:
-        data = {key: val for key, val in values.items() if val is not None}
+    def save_user(self, username: str, dataset_name: str, values: Dict[str, str]) -> None:
         existing_user_record = self._storage.get_user_record(username, dataset_name)
         if existing_user_record:
-            data = {**existing_user_record.to_dict(), **data}
+            merged_data = {**existing_user_record.to_dict(), **values}
+        else:
+            merged_data = values
 
-        record = self._record_cls.from_dict(data)
+        record = self._record_cls.from_dict(merged_data)
         self._storage.set_user_record(username, dataset_name, record)
 
     def output_user(self, username: str, dataset_name: Optional[str] = None) -> None:
@@ -45,8 +46,7 @@ class UserManager:
 
         self._output.output_users(users_records)
 
-    def search_users(self, filters: Dict[str, Optional[str]]) -> None:
-        filters = {key: val for key, val in filters.items() if val is not None}
+    def search_users(self, filters: Dict[str, str]) -> None:
         self._output.output_users(self._storage.search_users(filters))
 
     def remove_user(self, username: str, dataset: Optional[str]) -> None:
