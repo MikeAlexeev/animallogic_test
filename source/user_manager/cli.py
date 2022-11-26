@@ -2,10 +2,10 @@ import argparse
 import logging
 from pathlib import Path
 
+from .api.system_configuration import SystemConfiguration
 from .api.user_manager import UserManager
 from .plugin_system.plugin_loader import PluginLoader
 from .plugin_system.plugin_registry import PluginRegistry
-from .plugin_system.system_configuration import SystemConfiguration
 
 
 def remove_none_values(data: dict) -> dict:

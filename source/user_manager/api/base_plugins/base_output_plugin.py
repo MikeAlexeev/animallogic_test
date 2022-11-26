@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Dict, Optional
 
-from .base_plugin import BasePlugin
+from ...plugin_system.base_plugin import BasePlugin
 from .base_record_plugin import BaseRecordPlugin
 
 

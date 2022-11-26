@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 from typing import Dict, Optional, Set
 
-from user_manager.plugin_system.base_record_plugin import BaseRecordPlugin
-from user_manager.plugin_system.base_storage_plugin import BaseStoragePlugin
+from ..api.base_plugins.base_record_plugin import BaseRecordPlugin
+from ..api.base_plugins.base_storage_plugin import BaseStoragePlugin
 
 
 class FilterMatcher:
@@ -64,11 +64,15 @@ class JsonStoragePlugin(BaseStoragePlugin):
 
         return parsed_data
 
-    def search_users(self, filters: Dict[str, str]) -> Dict[str, Dict[str, BaseRecordPlugin]]:
+    def search_users(
+        self, filters: Dict[str, str]
+    ) -> Dict[str, Dict[str, BaseRecordPlugin]]:
         found_users: Set[str] = set()
         all_users_records = self.get_all_users_records()
         for username, user_records in all_users_records.items():
-            if 'username' in filters and FilterMatcher.match_filter(username, filters['username']):
+            if "username" in filters and FilterMatcher.match_filter(
+                username, filters["username"]
+            ):
                 found_users.add(username)
                 continue
 
@@ -77,7 +81,11 @@ class JsonStoragePlugin(BaseStoragePlugin):
                     found_users.add(username)
                     continue
 
-        return {username: records for username, records in all_users_records.items() if username in found_users}
+        return {
+            username: records
+            for username, records in all_users_records.items()
+            if username in found_users
+        }
 
     def set_user_record(
         self, username: str, dataset_name: str, record: BaseRecordPlugin

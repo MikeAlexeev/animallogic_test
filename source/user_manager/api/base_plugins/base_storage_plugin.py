@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Dict, Optional, Type
 
-from .base_plugin import BasePlugin
+from ...plugin_system.base_plugin import BasePlugin
 from .base_record_plugin import BaseRecordPlugin
 
 
@@ -26,7 +26,9 @@ class BaseStoragePlugin(BasePlugin):
         pass
 
     @abstractmethod
-    def search_users(self, filters: Dict[str, str]) -> Dict[str, Dict[str, BaseRecordPlugin]]:
+    def search_users(
+        self, filters: Dict[str, str]
+    ) -> Dict[str, Dict[str, BaseRecordPlugin]]:
         pass
 
     @abstractmethod

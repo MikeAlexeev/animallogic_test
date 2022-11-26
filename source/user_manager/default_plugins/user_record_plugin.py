@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from user_manager.plugin_system.base_record_plugin import BaseRecordPlugin
+from ..api.base_plugins.base_record_plugin import BaseRecordPlugin
 
 
 @dataclass

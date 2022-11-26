@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-from ..plugin_system.system_configuration import SystemConfiguration
+from .system_configuration import SystemConfiguration
 
 
 class UserManager:
@@ -11,7 +11,9 @@ class UserManager:
             record_type=self._record_cls
         )
 
-    def save_user(self, username: str, dataset_name: str, values: Dict[str, str]) -> None:
+    def save_user(
+        self, username: str, dataset_name: str, values: Dict[str, str]
+    ) -> None:
         existing_user_record = self._storage.get_user_record(username, dataset_name)
         if existing_user_record:
             merged_data = {**existing_user_record.to_dict(), **values}

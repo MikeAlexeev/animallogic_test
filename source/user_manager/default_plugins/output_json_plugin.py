@@ -1,8 +1,8 @@
 import json
 from typing import Any, Dict, Iterable, Optional
 
-from user_manager.plugin_system.base_output_plugin import BaseOutputPlugin
-from user_manager.plugin_system.base_record_plugin import BaseRecordPlugin
+from ..api.base_plugins.base_output_plugin import BaseOutputPlugin
+from ..api.base_plugins.base_record_plugin import BaseRecordPlugin
 
 
 class RecordJsonEncoder(json.JSONEncoder):

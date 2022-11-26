@@ -1,6 +1,6 @@
 from dataclasses import asdict, dataclass, fields
 
-from .base_plugin import BasePlugin
+from ...plugin_system.base_plugin import BasePlugin
 
 
 @dataclass

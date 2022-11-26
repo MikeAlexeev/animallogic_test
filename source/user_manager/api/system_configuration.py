@@ -1,10 +1,10 @@
 from typing import List, Type, cast
 
-from .base_output_plugin import BaseOutputPlugin
-from .base_plugin import BasePlugin
-from .base_record_plugin import BaseRecordPlugin
-from .base_storage_plugin import BaseStoragePlugin
-from .plugin_registry import PluginRegistry
+from ..plugin_system.base_plugin import BasePlugin
+from ..plugin_system.plugin_registry import PluginRegistry
+from .base_plugins.base_output_plugin import BaseOutputPlugin
+from .base_plugins.base_record_plugin import BaseRecordPlugin
+from .base_plugins.base_storage_plugin import BaseStoragePlugin
 
 
 class SystemConfiguration:
