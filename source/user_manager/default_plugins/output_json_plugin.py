@@ -1,5 +1,4 @@
 import json
-import sys
 from typing import Any, Dict, Iterable, Optional
 
 from user_manager.plugin_system.base_output_plugin import BaseOutputPlugin
@@ -20,20 +19,22 @@ class OutputJsonPlugin(BaseOutputPlugin):
     def output_user(
         self, username: str, user_records: Dict[str, BaseRecordPlugin]
     ) -> None:
-        print(self._dump_json({username: user_records}))
+        self.output_users({username: user_records})
 
     def output_users(
         self, users_records: Dict[str, Dict[str, BaseRecordPlugin]]
     ) -> None:
-        for username, user_records in users_records.items():
-            self.output_user(username, user_records)
+        print(self._dump_json(users_records))
 
     def output_user_record(
         self, username: str, dataset_name: str, user_record: BaseRecordPlugin
     ) -> None:
-        print(
-            f"user: '{username}', dataset: '{dataset_name}', data: {user_record.to_dict()}"
-        )
+        data = {
+            username: {
+                dataset_name: user_record
+            }
+        }
+        self.output_users(data)
 
     def output_not_found_error(
         self, username: str, dataset_name: Optional[str] = None
@@ -45,7 +46,7 @@ class OutputJsonPlugin(BaseOutputPlugin):
         else:
             msg = f"records for '{username}' user not found"
 
-        print(msg, file=sys.stderr)
+        print(self._dump_json({"error": msg}))
 
     def _dump_json(self, data: dict) -> str:
         return json.dumps(data, indent=2, sort_keys=True, cls=RecordJsonEncoder)
