@@ -1,9 +1,26 @@
 import json
+import re
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Set
 
 from user_manager.plugin_system.base_record_plugin import BaseRecordPlugin
 from user_manager.plugin_system.base_storage_plugin import BaseStoragePlugin
+
+
+class FilterMatcher:
+    @classmethod
+    def match_filter(cls, value: str, pattern: str) -> bool:
+        return bool(re.match(pattern, value))
+
+    @classmethod
+    def match_filters_dict(cls, data: Dict[str, str], filters: Dict[str, str]) -> bool:
+        for key, value in data.items():
+            if key not in filters:
+                continue
+            if cls.match_filter(value, filters[key]):
+                return True
+
+        return False
 
 
 class JsonStoragePlugin(BaseStoragePlugin):
@@ -46,6 +63,21 @@ class JsonStoragePlugin(BaseStoragePlugin):
                 parsed_data[username][dataset_name] = self._record_type.from_dict(data)
 
         return parsed_data
+
+    def search_users(self, filters: Dict[str, str]) -> Dict[str, Dict[str, BaseRecordPlugin]]:
+        found_users: Set[str] = set()
+        all_users_records = self.get_all_users_records()
+        for username, user_records in all_users_records.items():
+            if 'username' in filters and FilterMatcher.match_filter(username, filters['username']):
+                found_users.add(username)
+                continue
+
+            for _, record in user_records.items():
+                if FilterMatcher.match_filters_dict(record.to_dict(), filters):
+                    found_users.add(username)
+                    continue
+
+        return {username: records for username, records in all_users_records.items() if username in found_users}
 
     def set_user_record(
         self, username: str, dataset_name: str, record: BaseRecordPlugin

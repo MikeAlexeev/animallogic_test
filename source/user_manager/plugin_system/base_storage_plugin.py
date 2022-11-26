@@ -26,6 +26,10 @@ class BaseStoragePlugin(BasePlugin):
         pass
 
     @abstractmethod
+    def search_users(self, filters: Dict[str, str]) -> Dict[str, Dict[str, BaseRecordPlugin]]:
+        pass
+
+    @abstractmethod
     def set_user_record(
         self, username: str, dataset_name: str, record: BaseRecordPlugin
     ) -> None:

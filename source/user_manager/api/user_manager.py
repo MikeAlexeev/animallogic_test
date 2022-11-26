@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, Optional
 
 from ..plugin_system.system_configuration import SystemConfiguration
 
@@ -38,12 +38,16 @@ class UserManager:
 
         self._output.output_user(username, user_records)
 
-    def output_users(self, filters: Optional[dict] = None) -> None:
+    def output_users(self) -> None:
         users_records = self._storage.get_all_users_records()
         if not users_records:
             return
 
         self._output.output_users(users_records)
+
+    def search_users(self, filters: Dict[str, Optional[str]]) -> None:
+        filters = {key: val for key, val in filters.items() if val is not None}
+        self._output.output_users(self._storage.search_users(filters))
 
     def remove_user(self, username: str, dataset: Optional[str]) -> None:
         if dataset:

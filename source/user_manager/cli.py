@@ -8,7 +8,7 @@ from .plugin_system.plugin_registry import PluginRegistry
 from .plugin_system.system_configuration import SystemConfiguration
 
 
-def output_user(
+def output_user_info(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
     UserManager(system_configuration=system_configuration).output_user(
@@ -16,10 +16,16 @@ def output_user(
     )
 
 
-def output_all_users(
+def output_all_users_info(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
     UserManager(system_configuration=system_configuration).output_users()
+
+
+def search_users(
+    args: argparse.Namespace, system_configuration: SystemConfiguration
+) -> None:
+    UserManager(system_configuration=system_configuration).search_users(vars(args))
 
 
 def save_user(
@@ -55,12 +61,14 @@ def parse_args() -> argparse.Namespace:
     output_parser = subparsers.add_parser("get")
     output_all_parser = subparsers.add_parser("get-all")
     remove_parser = subparsers.add_parser("remove")
+    search_parser = subparsers.add_parser("search")
     list_parser = subparsers.add_parser("list-plugins")
 
     save_parser.set_defaults(func=save_user)
-    output_parser.set_defaults(func=output_user)
-    output_all_parser.set_defaults(func=output_all_users)
+    output_parser.set_defaults(func=output_user_info)
+    output_all_parser.set_defaults(func=output_all_users_info)
     remove_parser.set_defaults(func=remove_user)
+    search_parser.set_defaults(func=search_users)
     list_parser.set_defaults(func=list_plugins)
 
     for sub_parser in [
@@ -68,6 +76,7 @@ def parse_args() -> argparse.Namespace:
         output_parser,
         output_all_parser,
         remove_parser,
+        search_parser,
         list_parser,
     ]:
         # args not actualy used in all sub parsers. Added for unification and simplicity
@@ -81,10 +90,12 @@ def parse_args() -> argparse.Namespace:
     for sub_parser in [output_parser, remove_parser]:
         sub_parser.add_argument("dataset", nargs="?")
 
-    save_parser.add_argument("dataset", nargs="?", default="personal")
+    for sub_parser in [save_parser, search_parser]:
+        sub_parser.add_argument("--phone-number")
+        sub_parser.add_argument("--address")
 
-    save_parser.add_argument("--phone-number")
-    save_parser.add_argument("--address")
+    save_parser.add_argument("dataset", nargs="?", default="personal")
+    search_parser.add_argument("--username")
 
     return parser.parse_args()
 
