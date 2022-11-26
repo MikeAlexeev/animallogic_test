@@ -18,10 +18,10 @@ build: clean
 	$(VENV_PYTHON) setup.py bdist_wheel
 
 tests: install-editable
-	$(VENV_PYTHON) -m pytest -vv --cov=source
+	PATH=$(VENV_BIN):$(PATH) python -m pytest -vv --cov=source
 
 coverage: install-editable
-	$(VENV_PYTHON) -m pytest -vv --cov=source --cov-report=html
+	PATH=$(VENV_BIN):$(PATH) python -m pytest -vv --cov=source --cov-report=html
 
 lint:
 	$(VENV_BIN)/flake8 .
@@ -31,5 +31,8 @@ format:
 	$(VENV_BIN)/isort .
 	$(VENV_BIN)/black .
 
-example:
-	./example.sh
+example-cli:
+	./example_cli.sh
+
+example-api:
+	$(VENV_PYTHON) ./example_api.py
