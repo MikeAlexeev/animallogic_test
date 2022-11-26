@@ -13,7 +13,9 @@ class FilterMatcher:
         return bool(re.match(pattern, value))
 
     @classmethod
-    def match_patterns_dict(cls, data: Dict[str, Optional[str]], filters: Dict[str, str]) -> bool:
+    def match_patterns_dict(
+        cls, data: Dict[str, Optional[str]], filters: Dict[str, str]
+    ) -> bool:
         if not data:
             return True
 
