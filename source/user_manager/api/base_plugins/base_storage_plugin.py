@@ -12,7 +12,7 @@ class BaseStoragePlugin(BasePlugin):
     @classmethod
     def set_options(cls, **kwargs: Dict[str, str]) -> None:
         for opt in cls.get_option_names():
-            if opt in kwargs:
+            if opt in kwargs and kwargs[opt] is not None:
                 setattr(cls, opt, kwargs[opt])
 
     @abstractmethod

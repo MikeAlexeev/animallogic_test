@@ -8,10 +8,14 @@ class DynamicArgsLoader:
         self._system_configuration = system_configuration
 
     def get_record_args(self) -> List[str]:
-        return self._make_args(self._system_configuration.get_record_cls().get_option_names())
+        return self._make_args(
+            self._system_configuration.get_record_cls().get_option_names()
+        )
 
     def get_storage_args(self) -> List[str]:
-        return self._make_args(self._system_configuration.get_storage_cls().get_option_names())
+        return self._make_args(
+            self._system_configuration.get_storage_cls().get_option_names()
+        )
 
     @staticmethod
     def _make_args(field_names: List[str]) -> List[str]:

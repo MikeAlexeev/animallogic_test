@@ -13,7 +13,7 @@ class PluginLoader:
     def load_plugins(self, folder: Path) -> List[Type[BasePlugin]]:
         all_plugins: List[Type[BasePlugin]] = []
         for path in folder.glob("*.py"):
-            self._logger.info(f'loading plugins from "{path}"')
+            self._logger.debug(f'loading plugins from "{path}"')
             module = self._load_module(path)
             if not module:
                 self._logger.warning("module is not loaded")

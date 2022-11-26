@@ -29,7 +29,7 @@ def search_users(
     args: argparse.Namespace, system_configuration: SystemConfiguration
 ) -> None:
     filters = remove_none_values(vars(args))
-    UserManager(system_configuration=system_configuration).search_users(filters)
+    UserManager(system_configuration=system_configuration).search_users(**filters)
 
 
 def save_user(
