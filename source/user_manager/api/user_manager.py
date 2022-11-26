@@ -51,7 +51,7 @@ class UserManager:
     def search_users(self, filters: Dict[str, str]) -> None:
         self._output.output_users(self._storage.search_users(filters))
 
-    def remove_user(self, username: str, dataset: Optional[str]) -> None:
+    def remove_user(self, username: str, dataset: Optional[str] = None) -> None:
         if dataset:
             self._storage.remove_user_record(username, dataset)
         else:

@@ -9,5 +9,6 @@ pep8-naming
 wheel
 
 # testing
+mock
 pytest
 pytest-cov

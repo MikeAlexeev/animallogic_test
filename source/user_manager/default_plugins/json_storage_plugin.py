@@ -9,15 +9,18 @@ from user_manager.api.base_plugins.base_storage_plugin import BaseStoragePlugin
 
 class FilterMatcher:
     @classmethod
-    def match_filter(cls, value: str, pattern: str) -> bool:
+    def match_pattern(cls, value: str, pattern: str) -> bool:
         return bool(re.match(pattern, value))
 
     @classmethod
-    def match_filters_dict(cls, data: Dict[str, str], filters: Dict[str, str]) -> bool:
+    def match_patterns_dict(cls, data: Dict[str, str], filters: Dict[str, str]) -> bool:
+        if not data:
+            return True
+
         for key, value in data.items():
             if key not in filters:
                 continue
-            if cls.match_filter(value, filters[key]):
+            if cls.match_pattern(value, filters[key]):
                 return True
 
         return False
@@ -70,14 +73,14 @@ class JsonStoragePlugin(BaseStoragePlugin):
         found_users: Set[str] = set()
         all_users_records = self.get_all_users_records()
         for username, user_records in all_users_records.items():
-            if "username" in filters and FilterMatcher.match_filter(
+            if "username" in filters and FilterMatcher.match_pattern(
                 username, filters["username"]
             ):
                 found_users.add(username)
                 continue
 
             for _, record in user_records.items():
-                if FilterMatcher.match_filters_dict(record.to_dict(), filters):
+                if FilterMatcher.match_patterns_dict(record.to_dict(), filters):
                     found_users.add(username)
                     continue
 
